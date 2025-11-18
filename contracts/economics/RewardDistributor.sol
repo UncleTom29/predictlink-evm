@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract RewardDistributor is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable,
-    PausableUpgradeable
+    AccessControl, 
+    ReentrancyGuard,
+    Pausable
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant DISTRIBUTOR_ROLE = keccak256("DISTRIBUTOR_ROLE");
@@ -54,23 +52,14 @@ contract RewardDistributor is
     error TransferFailed();
     error ZeroAddress();
     error ZeroAmount();
-    error InvalidShares();
-    error PoolExpired();
+    error InvalidShares();  
     error ArrayLengthMismatch();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _oracleRegistry, 
         address _treasury,
         uint256 _defaultExpiryPeriod
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        
+    ) {
         if (_oracleRegistry == address(0) || _treasury == address(0)) revert ZeroAddress();
         
         oracleRegistry = _oracleRegistry;
@@ -139,7 +128,7 @@ contract RewardDistributor is
         
         if (pool.createdAt == 0) revert PoolNotFound();
         if (!pool.active) revert PoolNotActive();
-        if (block.timestamp > pool.expiryTime) revert PoolExpired();
+        if (block.timestamp > pool.expiryTime) revert PoolNotActive();
         
         Participant storage participant = poolParticipants[poolId][msg.sender];
         

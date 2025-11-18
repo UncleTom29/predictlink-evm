@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 interface IChainlinkOracle {
     function latestRoundData() external view returns (
@@ -22,7 +21,7 @@ interface IRedstoneOracle {
     function getValue() external view returns (uint256);
 }
 
-contract OracleAdapter is Initializable, AccessControlUpgradeable {
+contract OracleAdapter is AccessControl {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
     
@@ -72,17 +71,11 @@ contract OracleAdapter is Initializable, AccessControlUpgradeable {
     error StaleData();
     error InvalidPrice();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _oracleRegistry, 
         uint256 _cacheExpiry,
         uint256 _maxFailures
-    ) public initializer {
-        __AccessControl_init();
-        
+    ) {
         if (_oracleRegistry == address(0)) revert ZeroAddress();
         
         oracleRegistry = _oracleRegistry;

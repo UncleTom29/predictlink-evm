@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract StakingManager is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable, 
-    PausableUpgradeable 
+    AccessControl, 
+    ReentrancyGuard, 
+    Pausable 
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant SLASHER_ROLE = keccak256("SLASHER_ROLE");
@@ -54,21 +52,13 @@ contract StakingManager is
     error MaxStakeExceeded();
     error InvalidParameters();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         uint256 _minStakeAmount,
         uint256 _lockPeriod,
         uint256 _rewardRate,
         address _oracleRegistry,
         address _treasury
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        
+    ) {
         if (_oracleRegistry == address(0) || _treasury == address(0)) revert ZeroAddress();
         
         minStakeAmount = _minStakeAmount;

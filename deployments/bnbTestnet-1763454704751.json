@@ -1,0 +1,23 @@
+{
+  "network": "bnbTestnet",
+  "chainId": "97",
+  "deployer": "0xAa090665dEF73929E1BF0dd06f3E6896beC2C699",
+  "timestamp": "2025-11-18T08:31:44.751Z",
+  "contracts": {
+    "OracleRegistry": "0x2a539aE52d86C63052cD19ADd268D83Cf76f5B07",
+    "StakingManager": "0x44BD38022E8626673cd917CA91cc8075a52E2090",
+    "RewardDistributor": "0x9038cC56a1fA039324B8dB40Ce22581A5AA5E576",
+    "DisputeCoordinator": "0x6bC2B32b124aD2158ab3B8B9a52AeA14802C2b76",
+    "ProposalManager": "0x1Ea25f1993592573d04401216bd73b442A234BA6",
+    "SlashingManager": "0x156383D8A7c629849E60401A7a09f194E7fc4040",
+    "OracleAdapter": "0x309cEb2fA0b73bBeACAd48d04Af57fE193D086Cb",
+    "EventMarket": "0x8b49274c70CD932d8519FDa0cc27D7B719f74696"
+  },
+  "configuration": {
+    "minProposerBond": "10.0",
+    "minDisputerBond": "5.0",
+    "livenessPeriod": 7200,
+    "disputePeriod": 1800,
+    "treasury": "0xAa090665dEF73929E1BF0dd06f3E6896beC2C699"
+  }
+}

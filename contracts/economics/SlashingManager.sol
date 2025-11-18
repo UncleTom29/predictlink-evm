@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract SlashingManager is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable
+    AccessControl, 
+    ReentrancyGuard
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant SLASHER_ROLE = keccak256("SLASHER_ROLE");
@@ -107,26 +105,18 @@ contract SlashingManager is
     error InsufficientApprovals();
     error SlashingDelayNotMet();
     error ExceedsMaxSlashing();
-    error UserBlacklisted();
     error TransferFailed();
     error ZeroAddress();
     error InvalidParameters();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _stakingManager,
         address _treasury,
         uint256 _minApprovals,
         uint256 _slashingDelay,
         uint256 _maxSlashingPercentage,
         uint256 _permanentBanThreshold
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        
+    ) {
         if (_stakingManager == address(0) || _treasury == address(0)) revert ZeroAddress();
         
         stakingManager = _stakingManager;
@@ -159,7 +149,7 @@ contract SlashingManager is
         if (target == address(0)) revert InvalidTarget();
         if (baseAmount == 0) revert InvalidAmount();
         if (slashingRequests[requestId].timestamp != 0) revert RequestAlreadyExecuted();
-        if (isBlacklisted[target]) revert UserBlacklisted();
+        if (isBlacklisted[target]) revert InvalidTarget();
         
         uint256 slashingRate = reasonSlashingRates[reason];
         uint256 finalAmount = (baseAmount * slashingRate) / 10000;
@@ -236,7 +226,7 @@ contract SlashingManager is
         totalSlashed += request.amount;
         totalSlashingEvents++;
         
-        (bool success, bytes memory data) = stakingManager.call(
+        (bool success,) = stakingManager.call(
             abi.encodeWithSignature(
                 "slash(address,uint256,string)",
                 request.target,

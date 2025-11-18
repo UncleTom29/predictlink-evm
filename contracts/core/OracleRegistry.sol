@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract OracleRegistry is 
-    UUPSUpgradeable, 
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable,
-    PausableUpgradeable 
+    AccessControl, 
+    ReentrancyGuard,
+    Pausable 
 {
     bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
     bytes32 public constant DISPUTER_ROLE = keccak256("DISPUTER_ROLE");
@@ -116,22 +114,13 @@ contract OracleRegistry is
     error ZeroAddress();
     error TransferFailed();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         uint256 _minProposerBond,
         uint256 _minDisputerBond,
         uint256 _livenessPeriod,
         uint256 _disputePeriod,
         address _treasury
-    ) public initializer {
-        __UUPSUpgradeable_init();
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        
+    ) {
         if (_treasury == address(0)) revert ZeroAddress();
         
         minProposerBond = _minProposerBond;
@@ -444,12 +433,6 @@ contract OracleRegistry is
     function getEventDisputes(bytes32 eventId) external view returns (bytes32[] memory) {
         return eventDisputes[eventId];
     }
-    
-    function _authorizeUpgrade(address newImplementation) 
-        internal 
-        override 
-        onlyRole(DEFAULT_ADMIN_ROLE) 
-    {}
     
     receive() external payable {}
 }

@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract DisputeCoordinator is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable
+    AccessControl, 
+    ReentrancyGuard
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant ARBITRATOR_ROLE = keccak256("ARBITRATOR_ROLE");
@@ -82,20 +80,13 @@ contract DisputeCoordinator is
     error ZeroAddress();
     error TransferFailed();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _oracleRegistry,
         uint256 _minArbitrators,
         uint256 _votingPeriod,
         uint256 _quorumPercentage,
         uint256 _appealBond
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        
+    ) {
         if (_oracleRegistry == address(0)) revert ZeroAddress();
         
         oracleRegistry = _oracleRegistry;

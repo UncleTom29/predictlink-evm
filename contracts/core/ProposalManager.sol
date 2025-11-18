@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract ProposalManager is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable,
-    PausableUpgradeable
+    AccessControl, 
+    ReentrancyGuard,
+    Pausable
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
@@ -119,22 +117,14 @@ contract ProposalManager is
     error ZeroAddress();
     error InvalidParameters();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _oracleRegistry,
         address _treasury,
         uint256 _minProposalBond,
         uint256 _minChallengeBond,
         uint256 _livenessPeriod,
         uint256 _minConfidenceScore
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        
+    ) {
         if (_oracleRegistry == address(0) || _treasury == address(0)) revert ZeroAddress();
         
         oracleRegistry = _oracleRegistry;

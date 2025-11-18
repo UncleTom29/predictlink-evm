@@ -6,6 +6,24 @@
 [![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.20-orange)](https://soliditylang.org/)
 
+### TESTNET DEPLOYMENTS:
+
+OracleRegistry: https://testnet.bscscan.com/address/0x2a539aE52d86C63052cD19ADd268D83Cf76f5B07#code
+
+StakingManager: https://testnet.bscscan.com/address/0x44BD38022E8626673cd917CA91cc8075a52E2090#code
+
+RewardDistributor: https://testnet.bscscan.com/address/0x9038cC56a1fA039324B8dB40Ce22581A5AA5E576#code
+
+DisputeCoordinator: https://testnet.bscscan.com/address/0x6bC2B32b124aD2158ab3B8B9a52AeA14802C2b76#code
+
+ProposalManager: https://testnet.bscscan.com/address/0x1Ea25f1993592573d04401216bd73b442A234BA6#code
+
+SlashingManager: https://testnet.bscscan.com/address/0x156383D8A7c629849E60401A7a09f194E7fc4040#code
+
+OracleAdapter: https://testnet.bscscan.com/address/0x309cEb2fA0b73bBeACAd48d04Af57fE193D086Cb#code
+
+EventMarket: https://testnet.bscscan.com/address/0x8b49274c70CD932d8519FDa0cc27D7B719f74696#code
+
 **The AI-Powered Oracle for Instant, Trusted Market Resolution on BNB Chain**
 
 PredictLink is a next-generation hybrid oracle network that combines artificial intelligence, economic incentives, and autonomous security to deliver real-time event resolution with sub-2-hour finality. Built specifically for prediction markets, RWA protocols, and DeFi applications that demand speed, accuracy, and transparency.

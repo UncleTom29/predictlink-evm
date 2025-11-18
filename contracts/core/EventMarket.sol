@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract EventMarket is 
-    Initializable,
-    AccessControlUpgradeable, 
-    ReentrancyGuardUpgradeable,
-    PausableUpgradeable
+    AccessControl, 
+    ReentrancyGuard,
+    Pausable
 {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant MARKET_CREATOR_ROLE = keccak256("MARKET_CREATOR_ROLE");
@@ -102,21 +100,13 @@ contract EventMarket is
     error ZeroAddress();
     error MarketExpired();
     
-    constructor() {
-        _disableInitializers();
-    }
-    
-    function initialize(
+    constructor(
         address _oracleRegistry,
         address _treasury,
         uint256 _defaultPlatformFee,
         uint256 _minMarketDuration,
         uint256 _maxMarketDuration
-    ) public initializer {
-        __AccessControl_init();
-        __ReentrancyGuard_init();
-        __Pausable_init();
-        
+    ) {
         if (_oracleRegistry == address(0) || _treasury == address(0)) revert ZeroAddress();
         
         oracleRegistry = _oracleRegistry;
@@ -325,7 +315,6 @@ contract EventMarket is
             return amount * 1e18 / 1e18;
         }
         
-        uint256 k = liquidity * 1e18;
         uint256 newLiquidity = liquidity + amount;
         uint256 shares = (amount * 1e18 * 1e18) / newLiquidity;
         
